@@ -327,7 +327,7 @@
       
         
           
-            <h2 id="1-Hexo安装及相关配置"><a href="#1-Hexo安装及相关配置" class="headerlink" title="1. Hexo安装及相关配置"></a>1. Hexo安装及相关配置</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p><code>Hexo</code>安装很简单，<code>mac</code>和<code>windows</code>都有详细的安装教程，这里提供一个<a href="https://hexo.io/zh-cn/docs/index.html" target="_blank" rel="external">hexo官方详细的安装教程链接</a>。</p>
+            <h2 id="Hexo安装及相关配置"><a href="#Hexo安装及相关配置" class="headerlink" title="Hexo安装及相关配置"></a>Hexo安装及相关配置</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p><code>Hexo</code>安装很简单，<code>mac</code>和<code>windows</code>都有详细的安装教程，这里提供一个<a href="https://hexo.io/zh-cn/docs/index.html" target="_blank" rel="external">hexo官方详细的安装教程链接</a>。</p>
 <p>打开本地终端，然后执行以下命令，初始化工作目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ hexo init &lt;folder-path&gt;</div><div class="line">$ cd &lt;folder-path&gt;</div><div class="line">$ npm install</div></pre></td></tr></table></figure></p>
 <p>执行完以上命令之后，工作目录就初始化完成了。</p>
 <h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>进入工作目录会发现有一个<code>_config.yml</code>的文件，配置就是在这个文件中添加和修改的。</p>
@@ -379,7 +379,7 @@
 </tbody>
 </table>
 <p>这些知识简单介绍一下，具体的配置说明详见<a href="https://hexo.io/zh-cn/docs/configuration.html" target="_blank" rel="external">Hexo官方配置说明</a></p>
-<h2 id="2-hexo主题Next安装及相关配置"><a href="#2-hexo主题Next安装及相关配置" class="headerlink" title="2. hexo主题Next安装及相关配置"></a>2. hexo主题Next安装及相关配置</h2><h3 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h3><p>打开终端，执行如下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ cd &lt;folder-path&gt;</div><div class="line">$ git clone https://github.com/iissnan/hexo-theme-next themes/next</div></pre></td></tr></table></figure></p>
+<h2 id="Hexo主题Next安装及相关配置"><a href="#Hexo主题Next安装及相关配置" class="headerlink" title="Hexo主题Next安装及相关配置"></a>Hexo主题Next安装及相关配置</h2><h3 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h3><p>打开终端，执行如下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ cd &lt;folder-path&gt;</div><div class="line">$ git clone https://github.com/iissnan/hexo-theme-next themes/next</div></pre></td></tr></table></figure></p>
 <p>命令执行完成之后，编辑<code>_config.yml</code>文件，将<code>theme</code>参数的修改成<code>next</code>。</p>
 <p>然后执行如下命令，清除<code>Hexo</code>缓存：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo clean</div></pre></td></tr></table></figure></p>
 <h3 id="配置-1"><a href="#配置-1" class="headerlink" title="配置"></a>配置</h3><p><code>Next</code>主题也有很多配置参数，这里我还是简单介绍一些常用的：</p>
@@ -406,7 +406,7 @@
 </tbody>
 </table>
 <p>具体的配置说明详见<a href="http://theme-next.iissnan.com/getting-started.html#theme-settings" target="_blank" rel="external">Next官方配置说明</a>。</p>
-<h2 id="3-将网站托管到github上"><a href="#3-将网站托管到github上" class="headerlink" title="3. 将网站托管到github上"></a>3. 将网站托管到github上</h2><h3 id="创建仓库"><a href="#创建仓库" class="headerlink" title="创建仓库"></a>创建仓库</h3><p>github中创建一个仓库这里就不详细说明了，把几点注意事项说明一下：</p>
+<h2 id="将网站托管到github上"><a href="#将网站托管到github上" class="headerlink" title="将网站托管到github上"></a>将网站托管到github上</h2><h3 id="创建仓库"><a href="#创建仓库" class="headerlink" title="创建仓库"></a>创建仓库</h3><p>github中创建一个仓库这里就不详细说明了，把几点注意事项说明一下：</p>
 <ul>
 <li><strong>仓库必须是public的</strong></li>
 <li><strong>仓库名称要以yourname.github.io的格式命名</strong></li>
@@ -416,7 +416,7 @@
 <p>修改完成之后，我们可以打开终端执行如下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ hexo clean</div><div class="line">$ hexo g</div><div class="line">$ hexo d</div></pre></td></tr></table></figure></p>
 <p>将网站部署到github中。</p>
 <p>部署完成之后你可以通过访问 <a href="https://yourname.github.io" target="_blank" rel="external">https://yourname.github.io</a> 地址，如果能够访问，说明你在本地配置好的网站已经成功部署到github中了。</p>
-<h2 id="4-如何对本地网站进行版本控制"><a href="#4-如何对本地网站进行版本控制" class="headerlink" title="4. 如何对本地网站进行版本控制"></a>4. 如何对本地网站进行版本控制</h2><p>进过如上步骤之后你的网站已经成功部署到github中了，但是如果对你的网站进行版本控制呢？</p>
+<h2 id="如何对本地网站进行版本控制"><a href="#如何对本地网站进行版本控制" class="headerlink" title="如何对本地网站进行版本控制"></a>如何对本地网站进行版本控制</h2><p>进过如上步骤之后你的网站已经成功部署到github中了，但是如果对你的网站进行版本控制呢？</p>
 <p>我是参考<a href="http://chitanda.me/2015/06/18/hexo-sync-in-multiple-pc/" target="_blank" rel="external">利用git解决hexo博客多PC间同步问题</a>这篇博客的做法：<br>利用oschina的私有仓库来进行版本控制，在网站工作根路径下将该目录重新初始化成本地git仓库，然后将本地仓库提交到oschina的私有仓库中。</p>
 
           
