@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-12-10T12:19:21.732Z</updated>
+  <updated>2018-12-10T12:33:41.259Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="http://yoursite.com/2018/12/10/glide%E9%87%87%E5%9D%91%E8%AE%B0/"/>
     <id>http://yoursite.com/2018/12/10/glide采坑记/</id>
     <published>2018-12-10T12:18:00.000Z</published>
-    <updated>2018-12-10T12:19:21.732Z</updated>
+    <updated>2018-12-10T12:33:41.259Z</updated>
     
     <content type="html"><![CDATA[<!-- TOC --><ul><li><a href="#坑位">坑位</a></li></ul><!-- /TOC --><p>glide 我就不做过多介绍了，它是golang的包管理工具之一，由于该工具github上面不在维护，官方也推荐使用dep，所以之前也使用过dep，但是由于 dep 一直拉取不了 golang.org/x 相关依赖，无奈只能又切回 glide。</p><a id="more"></a><h2 id="坑位"><a href="#坑位" class="headerlink" title="坑位"></a>坑位</h2><ol><li><p>拉取 golang.org/x 相关包同样失败，报 Cannot detect VCS</p><ul><li><p>解决方案</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">// 替换拉取镜像</div><div class="line">glide mirror set https://golang.org/x/mobile https://github.com/golang/mobile --vcs git</div><div class="line">glide mirror set https://golang.org/x/crypto https://github.com/golang/crypto --vcs git</div><div class="line">glide mirror set https://golang.org/x/net https://github.com/golang/net --vcs git</div><div class="line">glide mirror set https://golang.org/x/tools https://github.com/golang/tools --vcs git</div><div class="line">glide mirror set https://golang.org/x/text https://github.com/golang/text --vcs git</div><div class="line">glide mirror set https://golang.org/x/image https://github.com/golang/image --vcs git</div><div class="line">glide mirror set https://golang.org/x/sys https://github.com/golang/sys --vcs git</div></pre></td></tr></table></figure></li></ul></li><li><p>私库的包拉取不了</p><ul><li><p>解决方案</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">// 同样替换拉取镜像</div><div class="line">glide mirror set [本地代码中import的包名,例如：test/keng] [对应私库的地址（http://host/test/keng] --vcs git</div></pre></td></tr></table></figure></li></ul></li><li><p>无法拉取子包</p><p> 假设你要拉取的包在glide.yaml中配置如下：</p> <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- package: golang.org/x/net/context</div></pre></td></tr></table></figure><p> 此时同样会报 Cannot detect VCS，因为不支持拉取子包</p><ul><li><p>解决方案</p><p>修改glide.yaml中的配置如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">- package: golang.org/x/net</div><div class="line">  subpackages:</div><div class="line">  - context</div></pre></td></tr></table></figure></li></ul></li></ol>]]></content>
     
