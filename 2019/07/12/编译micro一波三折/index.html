@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/favicon.ico?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="golang,go-micro," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="追风大虾go" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="背景由于本机上micro版本较低，其实本机版本是0.13.0，然后用这个版本命令行调用远程rpc一直报：
+123456&amp;#123;  &quot;id&quot;: &quot;go.micro.client.codec&quot;,  &quot;code&quot;: 500,  &quot;detail&quot;: &quot;json: cannot unmarshal string into Go struct field clientResponse.id of type">
+<meta property="og:type" content="article">
+<meta property="og:title" content="编译micro一波三折">
+<meta property="og:url" content="http://yoursite.com/2019/07/12/编译micro一波三折/index.html">
+<meta property="og:site_name" content="追风大虾go">
+<meta property="og:description" content="背景由于本机上micro版本较低，其实本机版本是0.13.0，然后用这个版本命令行调用远程rpc一直报：
+123456&amp;#123;  &quot;id&quot;: &quot;go.micro.client.codec&quot;,  &quot;code&quot;: 500,  &quot;detail&quot;: &quot;json: cannot unmarshal string into Go struct field clientResponse.id of type">
+<meta property="og:updated_time" content="2019-07-12T07:54:15.567Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="编译micro一波三折">
+<meta name="twitter:description" content="背景由于本机上micro版本较低，其实本机版本是0.13.0，然后用这个版本命令行调用远程rpc一直报：
+123456&amp;#123;  &quot;id&quot;: &quot;go.micro.client.codec&quot;,  &quot;code&quot;: 500,  &quot;detail&quot;: &quot;json: cannot unmarshal string into Go struct field clientResponse.id of type">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/12/编译micro一波三折/"/>
+
+
+
+
+
+  <title>编译micro一波三折 | 追风大虾go</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?de8515f31e6c7d1ec74baf640b8dc032";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">追风大虾go</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">doublesouth's blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/12/编译micro一波三折/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="doublesouth">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="追风大虾go">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">编译micro一波三折</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-12T15:48:00+08:00">
+                2019-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/go-micro/" itemprop="url" rel="index">
+                    <span itemprop="name">go-micro</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1,775
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>由于本机上micro版本较低，其实本机版本是0.13.0，然后用这个版本命令行调用远程rpc一直报：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"id"</span>: <span class="string">"go.micro.client.codec"</span>,</div><div class="line">  <span class="attr">"code"</span>: <span class="number">500</span>,</div><div class="line">  <span class="attr">"detail"</span>: <span class="string">"json: cannot unmarshal string into Go struct field clientResponse.id of type uint64"</span>,</div><div class="line">  <span class="attr">"status"</span>: <span class="string">"Internal Server Error"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>故需要升级本机micro版本。</p>
+<p><strong>升级版本</strong>: 1.5.0</p>
+<a id="more"></a>
+<p>升级过程可谓一波三折，坑中有坑啊。以下内容可能会让你有砸电脑的冲动，请三思而后行<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## 下面简单介绍一下升级过程</div><div class="line"></div><div class="line">```</div><div class="line">// 拉取micro源码到本地</div><div class="line">git clone https://github.com/micro/micro.git</div><div class="line"></div><div class="line">// 切换到v1.6.0版本</div><div class="line">git checkout v1.6.0</div><div class="line"></div><div class="line">// 本地基于v1.6.0版本创建一个新的v1.6.0版本分支</div><div class="line">git checkout -b v1.6.0</div><div class="line">```</div><div class="line"></div><div class="line">以上步骤操作完成之后已在本地创建了micro的v1.6.0版本分支，下面我们会基于这个分支来编译micro。</div><div class="line"></div><div class="line">------------------</div><div class="line"></div><div class="line">由于本地项目中使用到了micro的第三方plugin，具体包含:</div><div class="line"></div><div class="line">**registry** ：`etcdv3` </div><div class="line">**transport** ：`tcp`</div><div class="line"></div><div class="line">所以在编译micro的时候需要将这两个插件包含进来。</div><div class="line"></div><div class="line">我们需要在源码目录中创建 `plugins.go` 文件用来引用这些plugin，文件目录为micro源码根目录，如下：</div><div class="line"></div><div class="line">```</div><div class="line">Dockerfile README.md  bot        cmd        go.sum     main.go    new        plugins.go scripts    web</div><div class="line">LICENSE    api        cli        go.mod     internal   network    plugin     proxy      service</div><div class="line">```</div><div class="line"></div><div class="line">在源码目录中新增了一个 `plugins.go` 文件， 文件内容如下：</div><div class="line"></div><div class="line">```golang</div><div class="line">package main</div><div class="line"></div><div class="line">import (</div><div class="line">        _ &quot;github.com/micro/go-plugins/registry/etcdv3&quot;</div><div class="line">        _ &quot;github.com/micro/go-plugins/transport/tcp&quot;</div><div class="line">)</div><div class="line">```</div><div class="line"></div><div class="line">是的，你没看错，就是这么简单，只要将依赖的插件包引用进来即可，666~~~</div></pre></td></tr></table></figure></p>
+<hr>
+<p>好了，上面文件已经创建好了，此时我们可以尝试编译micro了，话不多说，行动起来吧</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">// 在源码根目录运行如下命令</div><div class="line">GO111MODULE=on go build -i -o micro main.go plugins.go</div></pre></td></tr></table></figure>
+<p>但是，现实总是残酷的，我们看到报了如下错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">go: finding github.com/micro/go-plugins/registry/etcdv3 latest</div><div class="line">go: finding github.com/micro/go-plugins/transport/tcp latest</div><div class="line">go: finding github.com/micro/go-plugins/registry latest</div><div class="line">go: finding github.com/micro/go-plugins/transport latest</div><div class="line">go: finding github.com/nats-io/nats.go v1.8.2-0.20190607221125-9f4d16fe7c2d</div><div class="line">go: github.com/nats-io/nats.go@v1.8.2-0.20190607221125-9f4d16fe7c2d: unknown revision 9f4d16fe7c2d</div><div class="line">go: error loading module requirements</div></pre></td></tr></table></figure>
+<p>发现无法识别 github.com/nats-io/nats.go@v1.8.2-0.20190607221125-9f4d16fe7c2d</p>
+<p>从github中查看github.com/nats-io/nats.go仓库，发现目前最新的release版本为v1.8.1，压根儿就没有v1.8.2版本。</p>
+<p>然后开始从源码中查找哪里依赖了这个版本的仓库，发现 go-plugins@v1.1.1 依赖了。</p>
+<p>尝试如何解决，首先查看micro源码中的go.mod文件中是否有依赖 go-plugins@v1.1.1， 内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">module github.com/micro/micro</div><div class="line"></div><div class="line">go 1.12</div><div class="line"></div><div class="line">require (</div><div class="line">	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e</div><div class="line">	github.com/golang/protobuf v1.3.1</div><div class="line">	github.com/google/uuid v1.1.1</div><div class="line">	github.com/gorilla/mux v1.7.2</div><div class="line">	github.com/micro/cli v0.2.0</div><div class="line">	github.com/micro/go-micro v1.6.0</div><div class="line">	github.com/serenize/snaker v0.0.0-20171204205717-a683aaf2d516</div><div class="line">	github.com/xlab/treeprint v0.0.0-20181112141820-a009c3971eca</div><div class="line">	golang.org/x/net v0.0.0-20190606173856-1492cefac77f</div><div class="line">	google.golang.org/genproto v0.0.0-20180831171423-11092d34479b // indirect</div><div class="line">	google.golang.org/grpc v1.21.1</div><div class="line">)</div></pre></td></tr></table></figure>
+<p>发现并没有依赖，所以之前编译的时候使用了最新的版本。我们修改一下go-plugins版本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">module github.com/micro/micro</div><div class="line"></div><div class="line">go 1.12</div><div class="line"></div><div class="line">require (</div><div class="line">	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e</div><div class="line">	github.com/golang/protobuf v1.3.1</div><div class="line">	github.com/google/uuid v1.1.1</div><div class="line">	github.com/gorilla/mux v1.7.2</div><div class="line">	github.com/micro/cli v0.2.0</div><div class="line">	github.com/micro/go-micro v1.6.0</div><div class="line">	github.com/serenize/snaker v0.0.0-20171204205717-a683aaf2d516</div><div class="line">	github.com/xlab/treeprint v0.0.0-20181112141820-a009c3971eca</div><div class="line">	golang.org/x/net v0.0.0-20190606173856-1492cefac77f</div><div class="line">	google.golang.org/genproto v0.0.0-20180831171423-11092d34479b // indirect</div><div class="line">	google.golang.org/grpc v1.21.1</div><div class="line">	github.com/micro/go-plugins v1.1.0</div><div class="line">)</div></pre></td></tr></table></figure>
+<hr>
+<p>再次编译……………………………..</p>
+<p>哇呀呀呀呀呀呀<del>~</del><del>~</del><del>~</del><del>~</del><del>~</del><del>~</del><del>~</del></p>
+<p>又报错了/(ㄒoㄒ)/~~</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">go: github.com/golang/lint@v0.0.0-20190313153728-d0100b6bd8b3: parsing go.mod: unexpected module path &quot;golang.org/x/lint&quot;</div><div class="line">go: github.com/testcontainers/testcontainer-go@v0.0.2: parsing go.mod: unexpected module path &quot;github.com/testcontainers/testcontainers-go&quot;</div><div class="line">go: error loading module requirements</div></pre></td></tr></table></figure>
+<p>好在这个问题已经有人踩过坑了，参考链接：<a href="https://github.com/golang/lint/issues/446#issuecomment-483638233" target="_blank" rel="external">https://github.com/golang/lint/issues/446#issuecomment-483638233</a></p>
+<p>这个只是lint的解决方案，testcontainers同理，修改之后的go.mod如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">module github.com/micro/micro</div><div class="line"></div><div class="line">go 1.12</div><div class="line"></div><div class="line">require (</div><div class="line">	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e</div><div class="line">	github.com/golang/protobuf v1.3.1</div><div class="line">	github.com/google/uuid v1.1.1</div><div class="line">	github.com/gorilla/mux v1.7.2</div><div class="line">	github.com/micro/cli v0.2.0</div><div class="line">	github.com/micro/go-micro v1.6.0</div><div class="line">	github.com/serenize/snaker v0.0.0-20171204205717-a683aaf2d516</div><div class="line">	github.com/xlab/treeprint v0.0.0-20181112141820-a009c3971eca</div><div class="line">	golang.org/x/net v0.0.0-20190606173856-1492cefac77f</div><div class="line">	google.golang.org/genproto v0.0.0-20180831171423-11092d34479b // indirect</div><div class="line">	google.golang.org/grpc v1.21.1</div><div class="line">	github.com/micro/go-plugins v1.1.0</div><div class="line">)</div><div class="line"></div><div class="line">replace github.com/golang/lint =&gt; golang.org/x/lint v0.0.0-20190409202823-959b441ac422</div><div class="line"></div><div class="line">replace github.com/testcontainers/testcontainer-go =&gt; github.com/testcontainers/testcontainers-go v0.0.0-20181115231424-8e868ca12c0f</div></pre></td></tr></table></figure>
+<hr>
+<p>心想这回应该可以大功告成了吧，我们再来一遍。</p>
+<p>🤮🤮🤮🤮🤮🤮🤮，”中毒身亡”</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">build command-line-arguments: cannot load github.com/hashicorp/consul/api: ambiguous import: found github.com/hashicorp/consul/api in multiple modules:</div><div class="line">	github.com/hashicorp/consul v1.4.4 (/Users/doublesouth/Documents/mycode/golang/lib/pkg/mod/github.com/hashicorp/consul@v1.4.4/api)</div><div class="line">	github.com/hashicorp/consul/api v1.1.0 (/Users/doublesouth/Documents/mycode/golang/lib/pkg/mod/github.com/hashicorp/consul/api@v1.1.0)</div></pre></td></tr></table></figure>
+<p>还有最后一口气，我们再坚持一下…</p>
+<p>又是各种网上查找</p>
+<p>最后功夫不负有心人，我们找到了问题的解决方案：<a href="https://github.com/hashicorp/consul/issues/6019#issuecomment-505782870" target="_blank" rel="external">https://github.com/hashicorp/consul/issues/6019#issuecomment-505782870</a></p>
+<p>github真的是个很神奇的网站😝，再次修改go.mod:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">module github.com/micro/micro</div><div class="line"></div><div class="line">go 1.12</div><div class="line"></div><div class="line">require (</div><div class="line">	github.com/SAP/go-hdb v0.14.1 // indirect</div><div class="line">	github.com/StackExchange/wmi v0.0.0-20181212234831-e0a55b97c705 // indirect</div><div class="line">	github.com/armon/circbuf v0.0.0-20190214190532-5111143e8da2 // indirect</div><div class="line">	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e</div><div class="line">	github.com/coredns/coredns v1.4.0 // indirect</div><div class="line">	github.com/envoyproxy/go-control-plane v0.6.9 // indirect</div><div class="line">	github.com/go-ole/go-ole v1.2.4 // indirect</div><div class="line">	github.com/golang/protobuf v1.3.1</div><div class="line">	github.com/google/btree v1.0.0 // indirect</div><div class="line">	github.com/google/uuid v1.1.1</div><div class="line">	github.com/gorilla/mux v1.7.2</div><div class="line">	github.com/hashicorp/consul v1.4.4 // indirect</div><div class="line">	github.com/hashicorp/go-gcp-common v0.5.0 // indirect</div><div class="line">	github.com/hashicorp/go-memdb v1.0.0 // indirect</div><div class="line">	github.com/hashicorp/go-plugin v1.0.0 // indirect</div><div class="line">	github.com/hashicorp/go-retryablehttp v0.5.3 // indirect</div><div class="line">	github.com/hashicorp/hil v0.0.0-20190212132231-97b3a9cdfa93 // indirect</div><div class="line">	github.com/hashicorp/raft-boltdb v0.0.0-20171010151810-6e5ba93211ea // indirect</div><div class="line">	github.com/hashicorp/vault v1.1.0 // indirect</div><div class="line">	github.com/hashicorp/vault-plugin-auth-alicloud v0.0.0-20190320211238-36e70c54375f // indirect</div><div class="line">	github.com/hashicorp/vault-plugin-auth-azure v0.0.0-20190320211138-f34b96803f04 // indirect</div><div class="line">	github.com/hashicorp/vault-plugin-auth-centrify v0.0.0-20190320211357-44eb061bdfd8 // indirect</div><div class="line">	github.com/hashicorp/vault-plugin-auth-kubernetes v0.0.0-20190328163920-79931ee7aad5 // indirect</div><div class="line">	github.com/hashicorp/vault-plugin-secrets-ad v0.0.0-20190327182327-ed2c3d4c3d95 // indirect</div><div class="line">	github.com/hashicorp/vault-plugin-secrets-alicloud v0.0.0-20190320213517-3307bdf683cb // indirect</div><div class="line">	github.com/hashicorp/vault-plugin-secrets-azure v0.0.0-20190320211922-2dc8a8a5e490 // indirect</div><div class="line">	github.com/hashicorp/vault-plugin-secrets-gcp v0.0.0-20190320211452-71903323ecb4 // indirect</div><div class="line">	github.com/hashicorp/vault-plugin-secrets-gcpkms v0.0.0-20190320213325-9e326a9e802d // indirect</div><div class="line">	github.com/influxdata/influxdb v1.7.5 // indirect</div><div class="line">	github.com/lyft/protoc-gen-validate v0.0.14 // indirect</div><div class="line">	github.com/mattn/go-colorable v0.1.1 // indirect</div><div class="line">	github.com/micro/cli v0.2.0</div><div class="line">	github.com/micro/go-micro v1.6.0</div><div class="line">	github.com/micro/go-plugins v1.1.0</div><div class="line">	github.com/pascaldekloe/goe v0.1.0 // indirect</div><div class="line">	github.com/serenize/snaker v0.0.0-20171204205717-a683aaf2d516</div><div class="line">	github.com/shirou/gopsutil v2.18.12+incompatible // indirect</div><div class="line">	github.com/ugorji/go/codec v0.0.0-20190320090025-2dc34c0b8780 // indirect</div><div class="line">	github.com/xlab/treeprint v0.0.0-20181112141820-a009c3971eca</div><div class="line">	golang.org/x/net v0.0.0-20190606173856-1492cefac77f</div><div class="line">	google.golang.org/grpc v1.21.1</div><div class="line">	layeh.com/radius v0.0.0-20190322222518-890bc1058917 // indirect</div><div class="line">)</div><div class="line"></div><div class="line">replace github.com/golang/lint =&gt; golang.org/x/lint v0.0.0-20190409202823-959b441ac422</div><div class="line"></div><div class="line">replace github.com/testcontainers/testcontainer-go =&gt; github.com/testcontainers/testcontainers-go v0.0.0-20181115231424-8e868ca12c0f</div><div class="line"></div><div class="line">replace github.com/hashicorp/consul =&gt; github.com/hashicorp/consul v1.5.1</div></pre></td></tr></table></figure>
+<hr>
+<p>好啦，我们在编译一下，终于大功告成了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>小伙伴，如果您觉得文章还不错，欢迎您的支持，我会继续努力创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="doublesouth 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="doublesouth 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/golang/" rel="tag"># golang</a>
+          
+            <a href="/tags/go-micro/" rel="tag"># go-micro</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/30/go-module初试/" rel="next" title="go-module初试">
+                <i class="fa fa-chevron-left"></i> go-module初试
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="doublesouth" />
+            
+              <p class="site-author-name" itemprop="name">doublesouth</p>
+              <p class="site-description motion-element" itemprop="description">人要活得有规律，有效率。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/enan01" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:enanznn@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://weibo.com/2586482832" target="_blank" title="微博">
+                      
+                        <i class="fa fa-fw fa-weibo"></i>微博</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/zhou-nan-nan-33/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-book"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">doublesouth</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">12.1k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
